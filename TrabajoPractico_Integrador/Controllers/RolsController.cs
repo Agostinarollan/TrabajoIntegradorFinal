@@ -10,22 +10,22 @@ using TrabajoPractico_Integrador.Models;
 
 namespace TrabajoPractico_Integrador.Controllers
 {
-    public class ClienteController : Controller
+    public class RolsController : Controller
     {
         private readonly AppDbContext _context;
 
-        public ClienteController(AppDbContext context)
+        public RolsController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: Cliente
+        // GET: Rols
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Clientes.ToListAsync());
+            return View(await _context.Roles.ToListAsync());
         }
 
-        // GET: Cliente/Details/5
+        // GET: Rols/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace TrabajoPractico_Integrador.Controllers
                 return NotFound();
             }
 
-            var cliente = await _context.Clientes
+            var rol = await _context.Roles
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (cliente == null)
+            if (rol == null)
             {
                 return NotFound();
             }
 
-            return View(cliente);
+            return View(rol);
         }
 
-        // GET: Cliente/Create
+        // GET: Rols/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Cliente/Create
+        // POST: Rols/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,LastName,Dni,Email")] Cliente cliente)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Descripcion,Estado")] Rol rol)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(cliente);
+                _context.Add(rol);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(cliente);
+            return View(rol);
         }
 
-        // GET: Cliente/Edit/5
+        // GET: Rols/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace TrabajoPractico_Integrador.Controllers
                 return NotFound();
             }
 
-            var cliente = await _context.Clientes.FindAsync(id);
-            if (cliente == null)
+            var rol = await _context.Roles.FindAsync(id);
+            if (rol == null)
             {
                 return NotFound();
             }
-            return View(cliente);
+            return View(rol);
         }
 
-        // POST: Cliente/Edit/5
+        // POST: Rols/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,LastName,Dni,Email")] Cliente cliente)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripcion,Estado")] Rol rol)
         {
-            if (id != cliente.Id)
+            if (id != rol.Id)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace TrabajoPractico_Integrador.Controllers
             {
                 try
                 {
-                    _context.Update(cliente);
+                    _context.Update(rol);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ClienteExists(cliente.Id))
+                    if (!RolExists(rol.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace TrabajoPractico_Integrador.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(cliente);
+            return View(rol);
         }
 
-        // GET: Cliente/Delete/5
+        // GET: Rols/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,34 +124,34 @@ namespace TrabajoPractico_Integrador.Controllers
                 return NotFound();
             }
 
-            var cliente = await _context.Clientes
+            var rol = await _context.Roles
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (cliente == null)
+            if (rol == null)
             {
                 return NotFound();
             }
 
-            return View(cliente);
+            return View(rol);
         }
 
-        // POST: Cliente/Delete/5
+        // POST: Rols/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var cliente = await _context.Clientes.FindAsync(id);
-            if (cliente != null)
+            var rol = await _context.Roles.FindAsync(id);
+            if (rol != null)
             {
-                _context.Clientes.Remove(cliente);
+                _context.Roles.Remove(rol);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ClienteExists(int id)
+        private bool RolExists(int id)
         {
-            return _context.Clientes.Any(e => e.Id == id);
+            return _context.Roles.Any(e => e.Id == id);
         }
     }
 }

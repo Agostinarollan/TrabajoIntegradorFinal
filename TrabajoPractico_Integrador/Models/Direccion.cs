@@ -12,13 +12,13 @@ namespace TrabajoPractico_Integrador.Models
 
         public int CodigoPostal { get; set; }
 
-        //clave foranea
-        public int IdCliente { get; set; }
+        // Definimos la clave foranea
+        public int ClienteID { get; set; }
 
         //propiedad de navegacion
         public Cliente Cliente { get; set; }
 
-
+        //constructor vacio 
         public Direccion()
         {
 

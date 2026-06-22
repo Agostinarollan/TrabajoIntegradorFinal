@@ -6,8 +6,8 @@ namespace TrabajoPractico_Integrador.Models
     public class Cliente
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string LastName { get; set; }
+        public string Nombre { get; set; }
+        public string Apellido { get; set; }
         public int Dni { get; set; }
         public string Email { get; set; }
         public int Telefono { get; set; }
