@@ -23,10 +23,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Clientes" asp-action="Index">Clintes</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Clientes" asp-action="Index">Clientes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Direcciones" asp-action="Index">Direciones</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Direcciones" asp-action="Index">Direcciones</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Productos" asp-action="Index">Productos</a>
@@ -37,8 +37,14 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index">Usuarios</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Rols" asp-action="Index">Roles</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Acerca">Acerca</a>
+                        </li>
                     </ul>
-                    <p class="nav navbar-text">Hello, @User.Identity?.Name!</p>
+                    <p class="nav navbar-text">Bienvenido</p>
                 </div>
             </div>
         </nav>
@@ -51,7 +57,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - TrabajoPractico_Integrador - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2026 - Trabajo Práctico Integrador - Programación III
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -36,6 +36,7 @@ namespace TrabajoPractico_Integrador
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

@@ -56,6 +56,7 @@ namespace TrabajoPractico_Integrador.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nombre,Descripcion,Estado")] Rol rol)
         {
+         
             if (ModelState.IsValid)
             {
                 _context.Add(rol);

@@ -67,8 +67,8 @@ namespace TrabajoPractico_Integrador.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClienteID"] = new SelectList(_context.Clientes, "Id", "Id", venta.ClienteID);
-            ViewData["UsuarioID"] = new SelectList(_context.Usuarios, "Id", "Id", venta.UsuarioID);
+            ViewData["ClienteID"] = new SelectList(_context.Clientes, "Id", "Nombre", venta.ClienteID);
+            ViewData["UsuarioID"] = new SelectList(_context.Usuarios, "Id", "NombreUsuario", venta.UsuarioID);
             return View(venta);
         }
 
