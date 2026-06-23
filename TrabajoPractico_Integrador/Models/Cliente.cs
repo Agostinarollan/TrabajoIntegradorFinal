@@ -20,7 +20,6 @@ namespace TrabajoPractico_Integrador.Models
         public string Email { get; set; }
         [Required]
         public int Telefono { get; set; }
-
         //relacion inversa
         public ICollection<Direccion> Direcciones{get;set;}
         public ICollection<Venta> Ventas{get;set;}
