@@ -33,7 +33,7 @@ namespace TrabajoPractico_Integrador.Controllers
             {
                 return NotFound();
             }
-
+            // El include hace el JOIN
             var detalle_venta = await _context.DetalleVentas
                 .Include(d => d.Producto)
                 .Include(d => d.Venta)
@@ -62,10 +62,36 @@ namespace TrabajoPractico_Integrador.Controllers
         public async Task<IActionResult> Create([Bind("Id,Cantidad,PrecioUnitario,Subtotal,ProductoID,VentaID")] Detalle_venta detalle_venta)
         {
             if (ModelState.IsValid)
-            {
+            {   //Busca en la tabla Productos el producto cuyo Id sea igual al ProductoID que elegí en el formulario de detalle venta.
+                var producto = await _context.Productos
+                .FirstOrDefaultAsync(p => p.Id == detalle_venta.ProductoID);
+
+                if (producto == null)
+                {
+                    return NotFound();
+                }
+
+                detalle_venta.PrecioUnitario = producto.PrecioVenta;
+
+                detalle_venta.Subtotal = detalle_venta.Cantidad * detalle_venta.PrecioUnitario;
+
                 _context.Add(detalle_venta);
                 await _context.SaveChangesAsync();
+
+                var venta = await _context.Ventas
+                    .Include(v => v.Detalle_Ventas)
+                    .FirstOrDefaultAsync(v => v.Id == detalle_venta.VentaID);
+
+                if (venta != null)
+                {
+                    venta.Total = venta.Detalle_Ventas.Sum(d => d.Subtotal);
+                    _context.Update(venta);
+                    await _context.SaveChangesAsync();
+                }
+
                 return RedirectToAction(nameof(Index));
+
+
             }
             ViewData["ProductoID"] = new SelectList(_context.Productos, "Id", "Nombre", detalle_venta.ProductoID);
             ViewData["VentaID"] = new SelectList(_context.Ventas, "Id", "Id", detalle_venta.VentaID);

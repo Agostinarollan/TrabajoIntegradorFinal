@@ -11,6 +11,7 @@ namespace TrabajoPractico_Integrador.Models
         public int VentaID { get; set; }
         public Producto Producto { get; set; }
 
+        public string Descripcion { get; set; }
         public Venta Venta { get; set; }
         public Detalle_venta() { }
 
