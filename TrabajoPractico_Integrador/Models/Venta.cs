@@ -14,7 +14,7 @@ namespace TrabajoPractico_Integrador.Models
         public int UsuarioID { get; set; }
         public Cliente Cliente { get; set; }    
         public Usuario Usuario { get; set; }    
-        public ICollection<Detalle_venta> Detalle_Ventas { get; set; }
+        public ICollection<Detalle_venta> Detalle_Ventas { get; set; } = new List<Detalle_venta>();
 
         public Venta() { }
     }

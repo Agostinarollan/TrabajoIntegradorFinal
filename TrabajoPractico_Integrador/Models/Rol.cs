@@ -12,7 +12,7 @@ namespace TrabajoPractico_Integrador.Models
         public string Descripcion { get; set; } 
         public Boolean Estado {  get; set; } =true;   
 
-        public ICollection<Usuario> Usuarios { get; set; }
+        public ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
         public Rol() { }
 
 

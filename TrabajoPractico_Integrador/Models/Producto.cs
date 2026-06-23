@@ -15,7 +15,7 @@ namespace TrabajoPractico_Integrador.Models
         public int Stock { get; set; }
         [Range(0, 999999)]
         public decimal PrecioVenta { get; set; }
-        public ICollection <Detalle_venta> Detalles { get; set; }
+        public ICollection <Detalle_venta> Detalles { get; set; } = new Collection<Detalle_venta>();
         public Producto() {
         }
 

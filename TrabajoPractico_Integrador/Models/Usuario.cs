@@ -15,7 +15,7 @@ namespace TrabajoPractico_Integrador.Models
         public int IdRol {  get; set; }
         public Rol Rol { get; set; }
         
-        public ICollection<Venta> Ventas { get; set; }
+        public ICollection<Venta> Ventas { get; set; } = new List<Venta>();
 
         public Usuario()
         {
