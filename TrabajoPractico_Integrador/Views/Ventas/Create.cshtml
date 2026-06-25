@@ -1,51 +1,304 @@
-﻿@model TrabajoPractico_Integrador.Models.Venta
+﻿@model TrabajoPractico_Integrador.Models.ViewModels.PedidoViewModel
+@using TrabajoPractico_Integrador.Models
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nueva Venta";
 }
 
-<h1>Create</h1>
+<div class="container mt-4">
 
-<h4>Venta</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="fecha" class="control-label"></label>
-                <input asp-for="fecha" class="form-control" />
-                <span asp-validation-for="fecha" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Total" class="control-label"></label>
-                <input asp-for="Total" class="form-control" />
-                <span asp-validation-for="Total" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="ClienteID" class="control-label"></label>
-                <select asp-for="ClienteID" class ="form-control" asp-items="ViewBag.ClienteID"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="UsuarioID" class="control-label"></label>
-                <select asp-for="UsuarioID" class ="form-control" asp-items="ViewBag.UsuarioID"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+    <h2 class="mb-4">Nueva Venta</h2>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p class="mb-0">@error.ErrorMessage</p>
+            }
+        </div>
+    }
+
+    <form asp-action="ConfirmarPedido" method="post" id="formPedido">
+        @Html.AntiForgeryToken()
+
+        @* ===================== ENCABEZADO ===================== *@
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Encabezado del pedido</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Número de venta</label>
+                        <input type="text" class="form-control" value="(se asigna al confirmar)" disabled />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Fecha</label>
+                        <input type="text" class="form-control"
+                               value="@DateTime.Now.ToString("dd/MM/yyyy HH:mm")" disabled />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="ClienteID" class="form-label fw-semibold">Cliente</label>
+                        <select asp-for="ClienteID"
+                                asp-items="ViewBag.ClienteID"
+                                class="form-select">
+                            <option value="">-- Seleccionar cliente --</option>
+                        </select>
+                        <span asp-validation-for="ClienteID" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="UsuarioID" class="form-label fw-semibold">Vendedor</label>
+                        <select asp-for="UsuarioID"
+                                asp-items="ViewBag.UsuarioID"
+                                class="form-select">
+                            <option value="">-- Seleccionar vendedor --</option>
+                        </select>
+                        <span asp-validation-for="UsuarioID" class="text-danger small"></span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        @* ===================== AGREGAR PRODUCTO ===================== *@
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Agregar producto</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-2 align-items-end">
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Producto</label>
+                        <select id="selectProducto" class="form-select"
+                                asp-items="ViewBag.ProductoID">
+                            <option value="">-- Seleccionar producto --</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="inputCantidad" class="form-label fw-semibold">Cantidad</label>
+                        <input type="number" id="inputCantidad" class="form-control"
+                               value="1" min="1" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <button type="button"
+                                class="btn btn-success w-100"
+                                onclick="agregarProducto()">
+                            + Agregar
+                        </button>
+                    </div>
+
+                </div>
+                <div id="mensajeError" class="text-danger mt-2 d-none"></div>
+            </div>
+        </div>
+
+        @* ===================== TABLA DETALLE ===================== *@
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Detalle de productos</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover mb-0" id="tablaDetalle">
+                    <thead class="table-secondary">
+                        <tr>
+                            <th>Producto</th>
+                            <th class="text-center" style="width:120px">Cantidad</th>
+                            <th class="text-end" style="width:160px">Precio unitario</th>
+                            <th class="text-end" style="width:160px">Subtotal</th>
+                            <th class="text-center" style="width:80px">Quitar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoDetalle">
+                        <tr id="filaVacia">
+                            <td colspan="5" class="text-center text-muted py-3">
+                                No hay productos agregados aún.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            @* ===================== PIE ===================== *@
+            <div class="card-footer">
+                <div class="row justify-content-end">
+                    <div class="col-md-4">
+                        <table class="table table-sm mb-0">
+                            <tr>
+                                <td class="fw-semibold">Total de productos:</td>
+                                <td class="text-end" id="totalItems">0</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold fs-5">Total:</td>
+                                <td class="text-end fw-bold fs-5">
+                                    $<span id="montoTotal">0,00</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+         </div>
+
+        @* Inputs ocultos generados por JS al confirmar *@
+        <div id="inputsOcultos"></div>
+
+        <div class="d-flex gap-2 justify-content-end mb-4">
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary px-5" onclick="return prepararEnvio()">
+                Confirmar pedido
+            </button>
+        </div>
+
+    </form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        let carrito = [];
+        const preciosMap = {};
+
+        // Al cargar la página, precarga precios de todos los productos del dropdown
+        document.addEventListener('DOMContentLoaded', async () => {
+            const opciones = document.querySelectorAll('#selectProducto option[value]');
+            for (const op of opciones) {
+                const id = op.value;
+                if (!id) continue;
+                try {
+                    const resp = await fetch(`/Productos/GetProducto/${id}`);
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        preciosMap[id] = data.precioVenta;
+                    }
+                } catch (_) { }
+            }
+        });
+
+        function mostrarError(msg) {
+            const el = document.getElementById('mensajeError');
+            el.textContent = msg;
+            el.classList.remove('d-none');
+            setTimeout(() => el.classList.add('d-none'), 3000);
+        }
+
+        async function agregarProducto() {
+            const select = document.getElementById('selectProducto');
+            const productoID = parseInt(select.value);
+            const cantidad = parseInt(document.getElementById('inputCantidad').value);
+            const descripcion = select.options[select.selectedIndex]?.text ?? '';
+
+            if (!productoID) {
+                mostrarError('Seleccioná un producto antes de agregar.');
+                return;
+            }
+            if (!cantidad || cantidad < 1) {
+                mostrarError('La cantidad debe ser al menos 1.');
+                return;
+            }
+
+            // Obtener precio del mapa o por fetch
+            let precioUnitario = preciosMap[productoID];
+            if (precioUnitario === undefined) {
+                try {
+                    const resp = await fetch(`/Productos/GetProducto/${productoID}`);
+                    if (!resp.ok) { mostrarError('No se pudo obtener el precio del producto.'); return; }
+                    const data = await resp.json();
+                    precioUnitario = data.precioVenta;
+                    preciosMap[productoID] = precioUnitario;
+                } catch (_) {
+                    mostrarError('Error al comunicarse con el servidor.');
+                    return;
+                }
+            }
+
+            // Si ya está en el carrito, sumar la cantidad
+            const existente = carrito.find(x => x.productoID === productoID);
+            if (existente) {
+                existente.cantidad += cantidad;
+            } else {
+                carrito.push({ productoID, descripcion, precioUnitario, cantidad });
+            }
+
+            renderTabla();
+            select.value = '';
+            document.getElementById('inputCantidad').value = 1;
+        }
+
+        function eliminarItem(productoID) {
+            carrito = carrito.filter(x => x.productoID !== productoID);
+            renderTabla();
+        }
+
+        function renderTabla() {
+            const tbody = document.getElementById('cuerpoDetalle');
+            tbody.innerHTML = '';
+
+            if (carrito.length === 0) {
+                tbody.innerHTML = `<tr id="filaVacia">
+                        <td colspan="5" class="text-center text-muted py-3">
+                            No hay productos agregados aún.
+                        </td>
+                    </tr>`;
+                document.getElementById('totalItems').textContent = '0';
+                document.getElementById('montoTotal').textContent = '0,00';
+                return;
+            }
+
+            let totalItems = 0;
+            let montoTotal = 0;
+
+            carrito.forEach(item => {
+                const subtotal = item.cantidad * item.precioUnitario;
+                totalItems += item.cantidad;
+                montoTotal += subtotal;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${item.descripcion}</td>
+                        <td class="text-center">${item.cantidad}</td>
+                        <td class="text-end">$${formatNum(item.precioUnitario)}</td>
+                        <td class="text-end">$${formatNum(subtotal)}</td>
+                        <td class="text-center">
+                            <button type="button"
+                                    class="btn btn-danger btn-sm"
+                                    onclick="eliminarItem(${item.productoID})">
+                                &times;
+                            </button>
+                        </td>
+                    </tr>`;
+            });
+
+            document.getElementById('totalItems').textContent = totalItems;
+            document.getElementById('montoTotal').textContent = formatNum(montoTotal);
+        }
+
+        function formatNum(n) {
+            return n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function prepararEnvio() {
+            if (carrito.length === 0) {
+                mostrarError('Agregá al menos un producto antes de confirmar.');
+                return false;
+            }
+
+            const contenedor = document.getElementById('inputsOcultos');
+            contenedor.innerHTML = '';
+            carrito.forEach((item, i) => {
+                contenedor.innerHTML += `
+                        <input type="hidden" name="Items[${i}].ProductoID" value="${item.productoID}" />
+                        <input type="hidden" name="Items[${i}].Cantidad"   value="${item.cantidad}"   />
+                    `;
+            });
+
+            return true;
+        }
+    </script>
 }

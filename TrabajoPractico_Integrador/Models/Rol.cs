@@ -1,14 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace TrabajoPractico_Integrador.Models
 {
     public class Rol
     {
         public int Id{ get; set; }
-        public string Nombre { get; set; }
-        public string Descripcion { get; set; } 
-        public Boolean Estado {  get; set; } =true;   
+      
+        [Required(ErrorMessage = "El nombre es obligatorio.")]
+        [Display(Name = "Nombre")]
+        public string? Nombre { get; set; }
 
-        public ICollection<Usuario> Usuarios { get; set; }
+        [Required(ErrorMessage = "La descripción es obligatoria.")]
+        [Display(Name = "Descripción")]
+        public string? Descripcion { get; set; }
+
+        [Display(Name = "Estado")]
+        public Boolean Estado { get; set; } = true;
+        
+
+        public ICollection<Usuario> Usuarios { get; set; } =new List<Usuario>();
         public Rol() { }
 
 

@@ -153,5 +153,22 @@ namespace TrabajoPractico_Integrador.Controllers
         {
             return _context.Productos.Any(e => e.Id == id);
         }
+
+        // Devuelve precio y descripción de un producto en JSON
+        // Lo usa el JavaScript de la vista Create de Ventas
+
+        [HttpGet]
+        public async Task<IActionResult> GetProducto(int id)
+        {
+            var producto = await _context.Productos.FindAsync(id);
+            if (producto == null)
+                return NotFound();
+
+            return Json(new
+            {
+                descripcion = producto.Descripcion,
+                precioVenta = producto.PrecioVenta
+            });
+        }
     }
 }

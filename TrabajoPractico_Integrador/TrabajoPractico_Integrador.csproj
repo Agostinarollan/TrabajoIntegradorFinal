@@ -9,9 +9,11 @@
   <ItemGroup>
     <Compile Remove="Models\Class.cs" />
     <Compile Remove="Models\Interface.cs" />
+    <Compile Remove="Models\ViewModels\Class.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.11" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.25" />
