@@ -59,13 +59,15 @@ namespace TrabajoPractico_Integrador.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Calle,Numero,Ciudad,CodigoPostal,ClienteID")] Direccion direccion)
         {
+            ModelState.Remove(nameof(Direccion.Cliente));
+
             if (ModelState.IsValid)
             {
                 _context.Add(direccion);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClienteID"] = new SelectList(_context.Clientes, "Id", "Id", direccion.ClienteID);
+            ViewData["ClienteID"] = new SelectList(_context.Clientes, "Id", "Nombre", direccion.ClienteID);
             return View(direccion);
         }
 
@@ -82,7 +84,7 @@ namespace TrabajoPractico_Integrador.Controllers
             {
                 return NotFound();
             }
-            ViewData["ClienteID"] = new SelectList(_context.Clientes, "Id", "Id", direccion.ClienteID);
+            ViewData["ClienteID"] = new SelectList(_context.Clientes, "Id", "Nombre", direccion.ClienteID);
             return View(direccion);
         }
 
@@ -97,6 +99,8 @@ namespace TrabajoPractico_Integrador.Controllers
             {
                 return NotFound();
             }
+
+            ModelState.Remove(nameof(Direccion.Cliente));
 
             if (ModelState.IsValid)
             {
@@ -118,8 +122,9 @@ namespace TrabajoPractico_Integrador.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClienteID"] = new SelectList(_context.Clientes, "Id", "Id", direccion.ClienteID);
+            ViewData["ClienteID"] = new SelectList(_context.Clientes, "Id", "Nombre", direccion.ClienteID);
             return View(direccion);
+
         }
 
         // GET: Direcciones/Delete/5

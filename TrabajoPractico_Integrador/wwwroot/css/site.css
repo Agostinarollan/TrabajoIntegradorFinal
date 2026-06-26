@@ -20,3 +20,57 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.portada {
+    background-image: url('/img/portada.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contenido-portada {
+    background-color: rgba(255,255,255,0.75);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+body.fondo-sistema {
+    background-image: url('/img/portada.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.navbar {
+    background-color: rgba(255,255,255,0.85) !important;
+    backdrop-filter: blur(4px);
+}
+
+.contenido-principal {
+    background: rgba(255,255,255,0.85);
+    border-radius: 15px;
+    padding: 30px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.footer {
+    background-color: rgba(255,255,255,0.85);
+}
+
+.btn-logout {
+    background-color: #264653;
+    color: white;
+    border-radius: 6px;
+}
+
+    .btn-logout:hover {
+        background-color: #1d3557;
+        color: white;
+    }

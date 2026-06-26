@@ -1,15 +1,17 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using TrabajoPractico_Integrador.Data;
+using TrabajoPractico_Integrador.Filters;
 using TrabajoPractico_Integrador.Models;
 
 namespace TrabajoPractico_Integrador.Controllers
 {
+    [LoginRequerido]
     public class ClientesController : Controller
     {
         private readonly AppDbContext _context;

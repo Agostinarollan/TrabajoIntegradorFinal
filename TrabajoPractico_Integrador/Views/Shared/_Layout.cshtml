@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TrabajoPractico_Integrador.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body class="fondo-sistema">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -18,45 +18,81 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    
                     <ul class="navbar-nav flex-grow-1">
+                        @{
+                            var usuarioId = Context.Session.GetInt32("UsuarioID");
+                            var rolNav = Context.Session.GetString("UsuarioRol");
+                        }
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>                       
+
+                        @if (usuarioId != null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Clientes" asp-action="Index">Clientes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Ventas" asp-action="Create">Ventas</a>
+                            </li>
+                        }
+
+                        @if (rolNav == "Administrador")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Ventas" asp-action="Pedidos">Pedidos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Productos" asp-action="Index">Productos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Direcciones" asp-action="Index">Direcciones</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Usuarios" asp-action="Index">Usuarios</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Rols" asp-action="Index">Roles</a>
+                            </li>
+                        }
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Clientes" asp-action="Index">Clintes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Direcciones" asp-action="Index">Direciones</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Productos" asp-action="Index">Productos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Ventas" asp-action="Index">Ventas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index">Usuarios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Rols" asp-action="Index">Rol</a>
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Acerca">Acerca de</a>
                         </li>
                     </ul>
-                    <p class="nav navbar-text">Hello, @User.Identity?.Name!</p>
+                    @{
+                        var usuario = Context.Session.GetString("UsuarioNombre");
+                        var rol = Context.Session.GetString("UsuarioRol");
+                    }
+                    @if (!string.IsNullOrEmpty(usuario))
+                    {
+                        <span class="navbar-text me-3">
+                            👤 @usuario (@rol)
+                        </span>
+                        
+                        <a class="btn btn-logout btn-sm"
+                           asp-controller="Login"
+                           asp-action="Logout">
+                            Cerrar sesión
+                        </a>
+                    }
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container contenido-principal">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
-    </div>
+    </div>      
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - TrabajoPractico_Integrador - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2026 - Trabajo Práctico Integrador - Programación III
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

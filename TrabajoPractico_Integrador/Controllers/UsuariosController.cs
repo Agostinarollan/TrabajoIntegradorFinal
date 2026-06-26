@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BCrypt.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TrabajoPractico_Integrador.Data;
+using TrabajoPractico_Integrador.Filters;
 using TrabajoPractico_Integrador.Models;
-using BCrypt.Net;
 
 namespace TrabajoPractico_Integrador.Controllers
 {
+    [SoloAdmin]
     public class UsuariosController : Controller
     {
         private readonly AppDbContext _context;

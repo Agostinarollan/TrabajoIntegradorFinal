@@ -58,5 +58,11 @@ namespace TrabajoPractico_Integrador.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Login");
         }
+
+        // Acceso Denegado
+        public IActionResult Denegado()
+        {
+            return View();
+        }
     }
 }

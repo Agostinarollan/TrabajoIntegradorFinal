@@ -1,16 +1,18 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using TrabajoPractico_Integrador.Data;
+using TrabajoPractico_Integrador.Filters;
 using TrabajoPractico_Integrador.Models;
 using TrabajoPractico_Integrador.Models.ViewModels;
 
 namespace TrabajoPractico_Integrador.Controllers
 {
+    [LoginRequerido]
     public class VentasController : Controller
     {
         private readonly AppDbContext _context;
@@ -266,6 +268,64 @@ namespace TrabajoPractico_Integrador.Controllers
             ViewData["ClienteID"] = new SelectList(_context.Clientes, "Id", "Nombre", clienteID);
             ViewData["UsuarioID"] = new SelectList(_context.Usuarios, "Id", "NombreUsuario", usuarioID);
             ViewData["ProductoID"] = new SelectList(_context.Productos, "Id", "Descripcion");
+        }
+
+        // GET: /Ventas/Pedidos  — listado con búsqueda por usuario
+        [SoloAdmin] 
+        public async Task<IActionResult> Pedidos(string buscarUsuario)
+        {
+            // Guardamos el texto de búsqueda para mostrarlo en la view
+            ViewBag.FiltroUsuario = buscarUsuario;
+
+            var pedidos = _context.Ventas
+                .Include(v => v.Cliente)
+                .Include(v => v.Usuario)
+                .AsQueryable();
+
+            // Si hay búsqueda, filtramos por NombreUsuario
+            if (!string.IsNullOrEmpty(buscarUsuario))
+            {
+                pedidos = pedidos.Where(v =>
+                    v.Usuario.NombreUsuario.Contains(buscarUsuario));
+            }
+
+            return View(await pedidos.OrderByDescending(v => v.fecha).ToListAsync());
+        }
+
+        // GET: /Ventas/DetallePedido/5  — detalle completo de un pedido
+        [SoloAdmin] 
+        public async Task<IActionResult> DetallePedido(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var venta = await _context.Ventas
+                .Include(v => v.Cliente)
+                .Include(v => v.Usuario)
+                .Include(v => v.Detalle_Ventas)
+                    .ThenInclude(d => d.Producto)
+                .FirstOrDefaultAsync(v => v.Id == id);
+
+            if (venta == null) return NotFound();
+
+            return View(venta);
+        }
+
+        // Devuelve precio y descripción de un producto en JSON
+        // Lo usa el JavaScript de la vista Create de Ventas
+
+        [HttpGet]
+        public async Task<IActionResult> GetProducto(int id)
+        {
+            var producto = await _context.Productos.FindAsync(id);
+            if (producto == null)
+                return NotFound();
+
+            return Json(new
+            {
+                descripcion = producto.Descripcion,
+                precioVenta = producto.PrecioVenta,
+                stock = producto.Stock
+            });
         }
     }
 }

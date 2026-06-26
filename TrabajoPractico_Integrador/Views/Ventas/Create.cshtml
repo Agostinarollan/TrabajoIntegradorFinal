@@ -51,7 +51,7 @@
                         <span asp-validation-for="ClienteID" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-md-4">
+                    @*@<div class="col-md-4">
                         <label asp-for="UsuarioID" class="form-label fw-semibold">Vendedor</label>
                         <select asp-for="UsuarioID"
                                 asp-items="ViewBag.UsuarioID"
@@ -60,7 +60,14 @@
                         </select>
                         <span asp-validation-for="UsuarioID" class="text-danger small"></span>
                     </div>
-
+                    *@
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Vendedor</label>
+                        <input type="text" class="form-control"
+                               value="@Context.Session.GetString("UsuarioNombre")" disabled />
+                        <input type="hidden" name="UsuarioID"
+                               value="@Context.Session.GetInt32("UsuarioID")" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -172,7 +179,7 @@
                 const id = op.value;
                 if (!id) continue;
                 try {
-                    const resp = await fetch(`/Productos/GetProducto/${id}`);
+                    const resp = await fetch(`/Ventas/GetProducto/${id}`);
                     if (resp.ok) {
                         const data = await resp.json();
                         preciosMap[id] = data.precioVenta;

@@ -1,15 +1,17 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using TrabajoPractico_Integrador.Data;
+using TrabajoPractico_Integrador.Filters;
 using TrabajoPractico_Integrador.Models;
 
 namespace TrabajoPractico_Integrador.Controllers
 {
+    [SoloAdmin]
     public class ProductosController : Controller
     {
         private readonly AppDbContext _context;
@@ -152,23 +154,7 @@ namespace TrabajoPractico_Integrador.Controllers
         private bool ProductoExists(int id)
         {
             return _context.Productos.Any(e => e.Id == id);
-        }
+        }        
 
-        // Devuelve precio y descripción de un producto en JSON
-        // Lo usa el JavaScript de la vista Create de Ventas
-
-        [HttpGet]
-        public async Task<IActionResult> GetProducto(int id)
-        {
-            var producto = await _context.Productos.FindAsync(id);
-            if (producto == null)
-                return NotFound();
-
-            return Json(new
-            {
-                descripcion = producto.Descripcion,
-                precioVenta = producto.PrecioVenta
-            });
-        }
     }
 }
